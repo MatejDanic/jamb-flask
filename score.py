@@ -1,20 +1,19 @@
-# Method for calculating score depending on index of box in row
-def get_score(dice_set, box_num):
+def calculate_score(dice_set, box_type):
     score = 0
 
-    if box_num <= 5:
-        score = dice_set.count(box_num + 1) * (box_num + 1)
+    if box_type <= 6:
+        score = dice_set.count(box_type) * (box_type)
 
-    elif box_num == 6 or box_num == 7:
+    elif box_type == 7 or box_type == 8:
         score = sum(dice_set)
 
-    elif box_num == 8:
+    elif box_type == 9:
         for dice in dice_set:
             if dice_set.count(dice) >= 3:
                 score = 3 * dice + 10
                 break
 
-    elif box_num == 9:
+    elif box_type == 10:
         has_straight = True
         straight = [2, 3, 4, 5]
         for n in straight:
@@ -26,7 +25,7 @@ def get_score(dice_set, box_num):
             elif 6 in dice_set:
                 score = 45
 
-    elif box_num == 10:
+    elif box_type == 11:
         found_pair = False
         found_trips = False
         for dice in dice_set:
@@ -43,13 +42,13 @@ def get_score(dice_set, box_num):
         else:
             score += 30
 
-    elif box_num == 11:
+    elif box_type == 12:
         for dice in dice_set:
             if dice_set.count(dice) >= 4:
                 score = 4 * dice + 40
                 break
 
-    elif box_num == 12:
+    elif box_type == 13:
         for dice in dice_set:
             if dice_set.count(dice) == 5:
                 score = 5 * dice + 50
