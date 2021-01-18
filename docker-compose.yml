@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  jamb:
+    image: jamb:latest
+    build: .
+    ports:
+      - 5000:5000
+    container_name: jamb-flask 
+    volumes:
+      - .:/app
