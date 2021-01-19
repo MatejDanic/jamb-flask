@@ -7,7 +7,9 @@ import os, random
 
 app = Flask(__name__)
 app.secret_key = "tanji ključ"
-db = MongoClient('localhost', 27017).jamb
+
+client = MongoClient("mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority")
+db = client.jamb
 
 
 @app.route("/")
