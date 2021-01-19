@@ -4,20 +4,19 @@ from bson.objectid import ObjectId
 from models import Game
 import os, sys, random
 
-MONGODB_URI = os.environ.get('MONGODB_URI')
-if not MONGODB_URI:
-    MONGODB_URI = "mongodb://localhost:27017/jamb"
+MONGODB_URI = os.environ.get("MONGODB_URI")
+print(MONGODB_URI)
+sys.stdout.flush()
 
+if not MONGODB_URI:
+    MONGODB_URI = "mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority"
 app = Flask(__name__)
 
 app.secret_key = "tanji ključ"
 app.config['MONGODB_URI'] = MONGODB_URI
 
-try :
-    client = MongoClient(MONGODB_URI)
-except:
-    print("Exception se dogodio")
-    sys.stdout.flush()
+client = MongoClient(MONGODB_URI)
+
 db = client.jamb
 
 @app.route("/")
