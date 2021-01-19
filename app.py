@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, session, redirect, url_for
-from pymongo import MongoClient
+from pymongo import MongoClient, errors
 from bson.objectid import ObjectId
 from models import Game
 import os, sys, random
@@ -8,8 +8,18 @@ app = Flask(__name__)
 
 app.secret_key = "tanji ključ"
 
-client = MongoClient("mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@Cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority")
+
+try:
+    print(client.server_info())
+    sys.stdout.flush()
+except errors.ServerSelectionTimeoutError as err:
+    print(err)
+    sys.stdout.flush()
+
 db = client.jamb
+
+
 
 
 @app.route("/")
