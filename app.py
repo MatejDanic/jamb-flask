@@ -15,9 +15,9 @@ app = Flask(__name__)
 app.secret_key = "tanji ključ"
 app.config['MONGODB_URI'] = MONGODB_URI
 
-client = MongoClient(MONGODB_URI)
+# client = MongoClient(MONGODB_URI)
 
-db = client.jamb
+# db = client.jamb
 
 @app.route("/")
 def index():
@@ -25,7 +25,7 @@ def index():
         game_id = ""
         if "game_id" not in session:
             game = Game()
-            game_id = str(db.games.insert_one(game.to_dict()).inserted_id)
+            # game_id = str(db.games.insert_one(game.to_dict()).inserted_id)
             session["game_id"] = game_id
         return redirect(url_for("game", game_id = session["game_id"]))
     except:
@@ -37,7 +37,7 @@ def game(game_id):
     try:
         if "game_id" not in session:
             session["game_id"] = game_id
-        game = db.games.find_one({"_id": ObjectId(game_id)})
+        # game = db.games.find_one({"_id": ObjectId(game_id)})
         if game is None:
             session.pop("game_id")
             return redirect(url_for("index"))
@@ -52,13 +52,13 @@ def roll():
         if "game_id" not in session:
             return jsonify({"error": "no game id in session"})
         game_id = session["game_id"]
-        game = db.games.find_one({"_id": ObjectId(game_id)})
+        # game = db.games.find_one({"_id": ObjectId(game_id)})
         if game is None:
             session.pop("game_id")
             return jsonify({"error": "no game with dis id"})
         for dice in game["dice"]:
             dice["value"] = random.randint(1, 6)
-        db.games.update_one({'_id': ObjectId(game_id)}, {'$set': {"dice": game["dice"]}}, upsert=False)
+        # db.games.update_one({'_id': ObjectId(game_id)}, {'$set': {"dice": game["dice"]}}, upsert=False)
         return jsonify({"message": [game["dice"]]})
     except:
         return jsonify({"error": "exception"})
