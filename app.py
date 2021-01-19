@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, session, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from models import Game
-import os, random
+import os, sys, random
 
 MONGODB_URI = os.environ.get('MONGODB_URI')
 if not MONGODB_URI:
@@ -13,8 +13,11 @@ app = Flask(__name__)
 app.secret_key = "tanji ključ"
 app.config['MONGODB_URI'] = MONGODB_URI
 
-client = MongoClient(MONGODB_URI)
-
+try :
+    client = MongoClient(MONGODB_URI)
+except:
+    print("Exception se dogodio")
+    sys.stdout.flush()
 db = client.jamb
 
 @app.route("/")
