@@ -35,8 +35,26 @@ html body {
     grid-template-rows: repeat(18, 32px);
 }
 
+.column {
+    grid-row-start: 1;
+    grid-row-end: 18;
+    display: grid;
+    grid-template-rows: repeat(17, 32px);
+}
+
+.row {
+    grid-column-start: 1;
+    grid-column-end: 7;
+    display: grid;
+    grid-template-columns: repeat(3, 128px);
+}
+
 .box {
     background-color: white;
+}
+
+button {
+    cursor: pointer;
 }
 
 .dice {
@@ -57,7 +75,6 @@ html body {
 .button-roll-dice {
     grid-row-start: 1;
     grid-row-end: 8;
-    grid-column-start: 6;
 }
 
 .button-form {
@@ -68,28 +85,11 @@ html body {
 .button-restart {
     grid-row-start: 9;
     grid-row-end: 11;
-    grid-column-start: 6;
 }
 
 .button-scoreboard {
     grid-row-start: 12;
     grid-row-end: 17;
-    grid-column-start: 6;
-}
-
-.button-menu {
-    grid-column-start: 1;
-    grid-column-end: 3;
-}
-
-.button-profile {
-    grid-column-start: 3;
-    grid-column-end: 5;
-}
-
-.score-final {
-    grid-column-start: 5;
-    grid-column-end: 7;
 }
 
 @media screen and (max-width: 384px) {

@@ -1,52 +1,48 @@
-class Form:
+class Game:
     def __init__(self):
-        self.value = 0
-        self.filled = 0
         self.announcement = None
-        self.columns = [Column(i+1) for i in range(4)]
-        self.dice = [Dice(i+1) for i in range(5)]
+        self.roll_count = 0
+        self.dice = []
+        for i in range(5):
+            dice = {}
+            dice["ordinal_number"] = i
+            dice["value"] = i%6+1
+            self.dice.append(dice)
+        self.form = {}
+        self.form["columns"] = []
+        for i in range(4):
+            column = {}
+            column["type"] = i
+            column["boxes"] = []
+            for j in range(13):
+                box = {}
+                box["type"] = j
+                box["value"] = 0
+                box["filled"] = 0
+                box["available"] = 0
+                column["boxes"].append(box)
+            self.form["columns"].append(column)
+
 
     def __repr__(self):
         string = ""
+        for d in self.dice:
+            
+            C='o '
+            dice_string =  '-----\n|'+C[d["value"]<1]+' '+C[d["value"]<3]+'|\n|'+C[d["value"]<5]
+            string += dice_string+C[d["value"]&1]+dice_string[::-1]
+            string += "\n"
+        string += "\n"
         for i in range(13):
             string += '| '
             for j in range(4):
-                if self.columns[j].boxes[i].filled:
-                    string += str(self.columns[j].boxes[i].value) + ' | '
+                if self.form["columns"][j]["boxes"][i]["filled"]:
+                    string += str(self.form["columns"]
+                                  [j]["boxes"][i]["value"]) + ' | '
                 else:
                     string += '- | '
             string += '</br>'
         return string
 
-class Column:
-    def __init__(self, column_type):
-        self.column_type = column_type
-        self.boxes = [Box(i+1) for i in range(13)]
-
-    def __repr__(self):
-        string = str(self.column_type)
-        for i in self.boxes:
-            string += str(i) + "\n"
-        return string
-
-
-class Box:
-    def __init__(self, box_type):
-        self.value = 0
-        self.filled = 0
-        self.available = 0
-        self.box_type = box_type
-
-    def __repr__(self):
-        string = str(self.box_type) + ": " + str(self.value) + "(filled: " + str(self.filled) + ", available: " + str(self.available) + ")"
-        return string
-
-
-class Dice:
-    def __init__(self, ordinal_number):
-        self.ordinal_number = ordinal_number
-        self.value = 6
-    
-    def __repr__(self):
-        string = str(self.ordinal_number) + ": " + str(self.value)
-        return string
+    def to_dict(self):
+        return dict((key, value) for (key, value) in self.__dict__.items())

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+<title>Jamb</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="viewport" content="height=device-height, initial-scale=1, minimum-scale=1" />
+
+<head>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+</head>
+
+<body>
+    <div class="center">
+        <div class="dice-rack">
+            {% for dice in game.dice %}
+            <button class="button dice image-container" id="DICE-{{dice.ordinal_number}}"
+                style="background-image: url(../static/images/dice/{{dice.value}}.png);"></button>
+            {% endfor %}
+        </div>
+        <div class="form">
+            <div class="column">
+                <button class="button button-form button-info image-container bg-lightpink"
+                    style="background-image: url(../static/images/misc/info.png);"></button>
+                {% for i in range(6) %}
+                <button class="button button-form image-container bg-skyblue"
+                    style="background-image: url(../static/images/dice/{{i+1}}.png);"></button>
+                {% endfor %}
+                <button class="button button-form bg-skyblue">(1-6)</button>
+                <button class="button button-form bg-skyblue">MAX</button>
+                <button class="button button-form bg-skyblue">MIN</button>
+                <button class="button button-form bg-skyblue">∆ x 1's</button>
+                <button class="button button-form bg-skyblue">TRIS</button>
+                <button class="button button-form bg-skyblue">SKALA</button>
+                <button class="button button-form bg-skyblue">FULL</button>
+                <button class="button button-form bg-skyblue">POKER</button>
+                <button class="button button-form bg-skyblue">JAMB</button>
+                <button class="button button-form bg-skyblue">(tris - jamb)</button>
+            </div>
+            {% for column in game.form.columns %}
+            <div class="column" id={{column.type}}>
+                {% if column.type == 0 %}
+                <button class="button button-form image-container"
+                    style="background-image: url(../static/images/column/DOWNWARDS.png);"></button>
+                {% endif %}
+                {% if column.type == 1 %}
+                <button class="button button-form image-container"
+                    style="background-image: url(../static/images/column/UPWARDS.png);"></button>
+                {% endif %}
+                {% if column.type == 2 %}
+                <button class="button button-form image-container"
+                    style="background-image: url(../static/images/column/ANY_DIRECTION.png);"></button>
+                {% endif %}
+                {% if column.type == 3 %}
+                <button class="button button-form image-container"
+                    style="background-image: url(../static/images/column/ANNOUNCEMENT.png);"></button>
+                {% endif %}
+                {% for box in column.boxes %}
+                {% if box.type == 6 %}
+                <button class="button button-form bg-skyblue"></button>
+                {% endif %}
+                {% if box.type == 8 %}
+                <button class="button button-form bg-skyblue"></button>
+                {% endif %}
+                <button class="button button-form box">
+                    {% if box.filled %}
+                    {{box.value}}
+                    {% endif %}
+                </button>
+                {% endfor %}
+                <button class="button button-form bg-skyblue"></button>
+            </div>
+            {% endfor %}
+            <div class="column">
+                <button class="button button-form button-roll-dice image-container bg-lightpink"
+                    style="background-image: url(../static/images/misc/roll_{{game.roll_count}}.png);"
+                    onclick="roll()"></button>
+                <button class="button button-form bg-skyblue"></button>
+                <button class="button button-form button-restart image-container bg-lightpink"
+                    style="background-image: url(../static/images/misc/restart.png);"></button>
+                <button class="button button-form bg-skyblue"></button>
+                <button class="button button-form button-scoreboard bg-lightpink"></button>
+                <div class="button button-form bg-skyblue"></div>
+            </div>
+            <div class="row">
+                <button class="button button-form image-container bg-lightpink"
+                    style="background-image: url(../static/images/misc/cog.png);"></button></button>
+                <button class="button button-form">UKUPNO:</button>
+                <div class="button button-form bg-skyblue"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
