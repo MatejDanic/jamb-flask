@@ -108,6 +108,14 @@ button {
         grid-template-rows: repeat(18, 5.55556%);
     }
 
+    .column {
+        grid-template-rows: repeat(17, 5.88235%);
+    }
+
+    .row {
+        grid-template-columns: repeat(3, 33.33333%);
+    }
+
     .dice {
         width: 19vw;
         height: 19vw;
