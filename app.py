@@ -8,7 +8,8 @@ import os, random
 app = Flask(__name__)
 app.secret_key = "tanji ključ"
 
-client = MongoClient("mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority", connect=False)
+client = MongoClient(os.environ.get("MONGODB_URI", "mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority"), connect=False, ssl=True)
+
 db = client.jamb
 
 
