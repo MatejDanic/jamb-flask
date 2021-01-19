@@ -4,20 +4,13 @@ from bson.objectid import ObjectId
 from models import Game
 import os, sys, random
 
-MONGODB_URI = os.environ.get("MONGODB_URI")
-print(MONGODB_URI)
-sys.stdout.flush()
-
-if not MONGODB_URI:
-    MONGODB_URI = "mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority"
 app = Flask(__name__)
 
 app.secret_key = "tanji ključ"
-app.config['MONGODB_URI'] = MONGODB_URI
 
-# client = MongoClient(MONGODB_URI)
+client = MongoClient("mongodb+srv://dbUser:SWDAGlSdPAbgrgEC@Cluster0.m0vzw.mongodb.net/jamb?retryWrites=true&w=majority")
+db = client.jamb
 
-# db = client.jamb
 
 @app.route("/")
 def index():
@@ -25,7 +18,7 @@ def index():
         game_id = ""
         if "game_id" not in session:
             game = Game()
-            # game_id = str(db.games.insert_one(game.to_dict()).inserted_id)
+            game_id = str(db.games.insert_one(game.to_dict()).inserted_id)
             session["game_id"] = game_id
         return redirect(url_for("game", game_id = session["game_id"]))
     except:
@@ -35,9 +28,11 @@ def index():
 @app.route("/game/<game_id>")
 def game(game_id):
     try:
+        if not game_id:
+            return render_template("game.html")
         if "game_id" not in session:
             session["game_id"] = game_id
-        # game = db.games.find_one({"_id": ObjectId(game_id)})
+        game = db.games.find_one({"_id": ObjectId(game_id)})
         if game is None:
             session.pop("game_id")
             return redirect(url_for("index"))
@@ -52,16 +47,20 @@ def roll():
         if "game_id" not in session:
             return jsonify({"error": "no game id in session"})
         game_id = session["game_id"]
-        # game = db.games.find_one({"_id": ObjectId(game_id)})
+        game = db.games.find_one({"_id": ObjectId(game_id)})
         if game is None:
             session.pop("game_id")
             return jsonify({"error": "no game with dis id"})
         for dice in game["dice"]:
             dice["value"] = random.randint(1, 6)
-        # db.games.update_one({'_id': ObjectId(game_id)}, {'$set': {"dice": game["dice"]}}, upsert=False)
+        db.games.update_one({'_id': ObjectId(game_id)}, {'$set': {"dice": game["dice"]}}, upsert=False)
         return jsonify({"message": [game["dice"]]})
     except:
         return jsonify({"error": "exception"})
+
+@app.route("/test")
+def test():
+    return "Test"
 
 
 if __name__ == "__main__":
