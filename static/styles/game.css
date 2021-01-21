@@ -10,6 +10,14 @@ html body {
     background-color: aliceblue;
 }
 
+.error {
+    text-shadow: 0 0 10px indianred;
+    font-size: 32px;
+    /* background-color: indianred; */
+    color: white;
+    font-weight: bolder;
+}
+
 .bg-lightpink {
     background-color: lightpink;
 }
@@ -57,7 +65,8 @@ button {
     cursor: pointer;
 }
 
-.dice {
+dice {
+    cursor: pointer;
     height: 64px;
     width: 64px;
     margin: 4px;

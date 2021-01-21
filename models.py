@@ -5,7 +5,7 @@ class Game:
         self.dice = []
         for i in range(5):
             dice = {}
-            dice["ordinal_number"] = i
+            dice["ordinal"] = i
             dice["value"] = i%6+1
             self.dice.append(dice)
         self.form = {}

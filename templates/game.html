@@ -4,10 +4,13 @@
 <title>Jamb</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="viewport" content="height=device-height, initial-scale=1, minimum-scale=1" />
-<meta name="viewport" content= "width=device-width, user-scalable=no" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
 
 
 <head>
+    <script type="text/javascript">
+        var game = "{{ game }}";
+    </script>
     <script src="{{ url_for('static', filename='js/game.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
@@ -17,8 +20,8 @@
     <div class="center">
         <div class="dice-rack">
             {% for dice in game.dice %}
-            <button class="button dice image-container" id="DICE-{{dice.ordinal_number}}"
-                style="background-image: url(../static/images/dice/{{dice.value}}.png);"></button>
+            <dice class="button image-container" ordinal="{{dice.ordinal}}"
+                style="background-image: url(../static/images/dice/{{dice.value}}.png);"></dice>
             {% endfor %}
         </div>
         <div class="form">
@@ -79,7 +82,7 @@
                     style="background-image: url(../static/images/misc/roll_{{game.roll_count}}.png);"
                     onclick="roll()"></button>
                 <button class="button button-form bg-skyblue"></button>
-                <button class="button button-form button-restart image-container bg-lightpink"
+                <button class="button button-form button-restart image-container bg-lightpink" id="restart"
                     style="background-image: url(../static/images/misc/restart.png);"></button>
                 <button class="button button-form bg-skyblue"></button>
                 <button class="button button-form button-scoreboard bg-lightpink"></button>
