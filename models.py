@@ -1,22 +1,25 @@
+COLUMN_TYPES = ["DOWNWARDS", "UPWARDS", "ANY_DIRECTION", "ANNOUNCEMENT"]
+BOX_TYPES = ["ONES", "TWOS", "THREES", "FOURS", "FIVES", "SIXES", "MAX", "MIN", "TRIPS", "STRAIGHT", "FULL", "POKER", "JAMB"]
+
 class Game:
     def __init__(self):
-        self.announcement = None
+        self.announcement = 0
         self.roll_count = 0
         self.dice = []
         for i in range(5):
             dice = {}
-            dice["ordinal"] = i
+            dice["ordinal"] = i + 1
             dice["value"] = i%6+1
             self.dice.append(dice)
         self.form = {}
         self.form["columns"] = []
         for i in range(4):
             column = {}
-            column["type"] = i
+            column["type"] = COLUMN_TYPES[i]
             column["boxes"] = []
             for j in range(13):
                 box = {}
-                box["type"] = j
+                box["type"] = BOX_TYPES[j]
                 box["value"] = 0
                 box["filled"] = 0
                 box["available"] = 0

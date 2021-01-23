@@ -10,6 +10,7 @@
 <head>
     <script type="text/javascript">
         var game = "{{ game }}";
+        game = JSON.parse(game.replace(/&#39;/g, '"'));
     </script>
     <script src="{{ url_for('static', filename='js/game.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
@@ -18,13 +19,13 @@
 
 <body>
     <div class="center">
-        <div class="dice-rack">
+        <div class="dice-rack" id="dice-rack">
             {% for dice in game.dice %}
-            <dice class="button image-container" ordinal="{{dice.ordinal}}"
-                style="background-image: url(../static/images/dice/{{dice.value}}.png);"></dice>
+            <button class="button image-container dice dice-border-black" id="DICE-{{dice.ordinal}}"
+                style="background-image: url(../static/images/dice/{{dice.value}}.png);"></button>
             {% endfor %}
         </div>
-        <div class="form">
+        <div class="form" id="form">
             <div class="column">
                 <button class="button button-form button-info image-container bg-lightpink"
                     style="background-image: url(../static/images/misc/info.png);"></button>
@@ -45,30 +46,30 @@
             </div>
             {% for column in game.form.columns %}
             <div class="column" id={{column.type}}>
-                {% if column.type == 0 %}
+                {% if column.type == "DOWNWARDS" %}
                 <button class="button button-form image-container"
                     style="background-image: url(../static/images/column/DOWNWARDS.png);"></button>
                 {% endif %}
-                {% if column.type == 1 %}
+                {% if column.type == "UPWARDS" %}
                 <button class="button button-form image-container"
                     style="background-image: url(../static/images/column/UPWARDS.png);"></button>
                 {% endif %}
-                {% if column.type == 2 %}
+                {% if column.type == "ANY_DIRECTION" %}
                 <button class="button button-form image-container"
                     style="background-image: url(../static/images/column/ANY_DIRECTION.png);"></button>
                 {% endif %}
-                {% if column.type == 3 %}
+                {% if column.type == "ANNOUNCEMENT" %}
                 <button class="button button-form image-container"
                     style="background-image: url(../static/images/column/ANNOUNCEMENT.png);"></button>
                 {% endif %}
                 {% for box in column.boxes %}
-                {% if box.type == 6 %}
+                {% if box.type == "MAX" %}
                 <button class="button button-form bg-skyblue"></button>
                 {% endif %}
-                {% if box.type == 8 %}
+                {% if box.type == "TRIPS" %}
                 <button class="button button-form bg-skyblue"></button>
                 {% endif %}
-                <button class="button button-form box">
+                <button class="button button-form box" id="BOX-{{column.type}}-{{box.type}}">
                     {% if box.filled %}
                     {{box.value}}
                     {% endif %}

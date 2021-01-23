@@ -33,9 +33,9 @@ def index():
             # save game to database and get game id
             game_id = db_operations.new_game(db)
             # put game id into session storage
-            session["game_id"] = game_id
+            session["game_id"] = str(game_id)
         # redirect to game view and pass game id parameter
-        return redirect(url_for("game", game_id = session["game_id"]))
+        return redirect(url_for("game", game_id=game_id))
     except Exception as error:
         # if an exception ocurred render view with error message
         return render_template("error.html", error=error)
@@ -55,10 +55,10 @@ def game(game_id):
         if game is None:
             # clear session storage
             session.pop("game_id")
-            # redirect to index to create a new game
+            # redirect to index to create a new game+
             return redirect(url_for("index"))
         # if game is successfully retrieved from database render game view
-        return render_template("game.html", game=game)
+        return render_template('game.html', game={x: game[x] for x in game if not x == "_id"})
     except Exception as error:
         # if an exception ocurred render view with error message
         return render_template("error.html", error=error)

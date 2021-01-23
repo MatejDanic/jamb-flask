@@ -1,21 +1,30 @@
-var dice;
 window.onload = function () {
-
-    dice = document.getElementsByTagName("dice");
+    let dice = document.querySelectorAll('[id^="DICE"]');
     for (key in dice) {
-        dice[key].held = false;
         dice[key].onclick = function () {
+            if (this.classList.contains("dice-border-black")) {
+                this.classList.remove("dice-border-black");
+                this.classList.add("dice-border-red");
+            } else {
+                this.classList.remove("dice-border-red");
+                this.classList.add("dice-border-black");
+            }
+        }
+    }
+    let boxes = document.querySelectorAll('[id^="BOX"]');
+    for (key in boxes) {
+        boxes[key].onclick = function () {
             console.log(this.getAttribute("id"));
         }
     }
-    restart = document.getElementById("restart")
-    restart.onclick = function () {
-        fetch("http://localhost:8080/game/" + sessionStorage.getItem("game_id") + "/restart", {
-            method: "PUT",
-            headers: { "Content-type": "application/json; charset=UTF-8" }
-        }).then(response => response.json())
-        window.location.reload();
-    }
+    // restart = document.getElementById("restart")
+    // restart.onclick = function () {
+    //     fetch("http://localhost:8080/game/" + sessionStorage.getItem("game_id") + "/restart", {
+    //         method: "PUT",
+    //         headers: { "Content-type": "application/json; charset=UTF-8" }
+    //     }).then(response => response.json())
+    //     window.location.reload();
+    // }
     console.log("Loaded");
 };
 
@@ -34,10 +43,4 @@ function roll() {
     //             console.log(json.message[0][dice]);
     //         }
     //     })
-}
-
-function hold(ordinal) {
-    console.log(ordinal);
-    dice[ordinal].held = !dice[ordinal].held;
-    console.log(ordinal + " held: " + dice[ordinal].held);
 }
