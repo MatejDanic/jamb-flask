@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, render_template, redirect, url_for, jsonify, session
+from flask import Flask, request, render_template, redirect, url_for, jsonify, session
 from pymongo import MongoClient, errors
 import os, sys, random
 import db_operations
@@ -31,9 +31,9 @@ def index():
         # if game id is not in session
         if "game_id" not in session:
             # save game to database and get game id
-            game_id = db_operations.new_game(db)
+            game_id = str(db_operations.new_game(db))
             # put game id into session storage
-            session["game_id"] = str(game_id)
+            session["game_id"] = game_id
         # redirect to game view and pass game id parameter
         return redirect(url_for("game", game_id=game_id))
     except Exception as error:
@@ -58,7 +58,7 @@ def game(game_id):
             # redirect to index to create a new game+
             return redirect(url_for("index"))
         # if game is successfully retrieved from database render game view
-        return render_template('game.html', game={x: game[x] for x in game if not x == "_id"})
+        return render_template('game.html', game={x: game[x] for x in game if not x == "_id"}, game_id=game_id)
     except Exception as error:
         # if an exception ocurred render view with error message
         return render_template("error.html", error=error)
@@ -76,34 +76,27 @@ def roll(game_id):
         # update current game
         db_operations.update_game(db, game)
         # return dice values
-        return Response(game["dice"], status=200)
+        return jsonify(game["dice"])
     except Exception as error:
+        response = jsonify({"error": str(error)})
+        response.status = 500
         # if an exception ocurred return error status
-        return Response(error, status=500)
+        return response
 
 
 # route for restarting game
 @app.route("/game/<game_id>/restart", methods=["PUT"])
 def restart(game_id):
     try:
-        # get game from database by game id
+        db_operations.restart_game_by_id(db, game_id)
         game = db_operations.get_game_by_id(db, game_id)
-        game["announcement"] = None
-        game["roll_count"] = 0
-        for column in game["columns"]:
-            for box in game["boxes"]:
-                box["value"] = 0
-                box["filled"] = False
-                box["available"] = False
-        for dice in game["dice"]:
-            dice["value"] = 6
-        # update game
-        db_operations.update_game(db, game)
-        # return dice values
-        return Response(game, status=200)
+        response = jsonify({x: game[x] for x in game if not x == "_id"})
+        return response
     except Exception as error:
+        response = jsonify({"error": str(error)})
+        response.status = 500
         # if an exception ocurred return error status
-        return Response(error, status=500)
+        return response
 
 
 if __name__ == "__main__":

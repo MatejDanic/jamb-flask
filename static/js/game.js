@@ -1,5 +1,8 @@
+var dice = document.querySelectorAll('[id^="DICE"]');
+var boxes = document.querySelectorAll('[id^="BOX"]');
+var roll_count = game.roll_count;
+var announcement = game.announcement;
 window.onload = function () {
-    let dice = document.querySelectorAll('[id^="DICE"]');
     for (key in dice) {
         dice[key].onclick = function () {
             if (this.classList.contains("dice-border-black")) {
@@ -11,36 +14,35 @@ window.onload = function () {
             }
         }
     }
-    let boxes = document.querySelectorAll('[id^="BOX"]');
     for (key in boxes) {
         boxes[key].onclick = function () {
             console.log(this.getAttribute("id"));
         }
     }
-    // restart = document.getElementById("restart")
-    // restart.onclick = function () {
-    //     fetch("http://localhost:8080/game/" + sessionStorage.getItem("game_id") + "/restart", {
-    //         method: "PUT",
-    //         headers: { "Content-type": "application/json; charset=UTF-8" }
-    //     }).then(response => response.json())
-    //     window.location.reload();
-    // }
+    let restart = document.getElementById("restart");
+    restart.onclick = function () {
+        const Http = new XMLHttpRequest();
+        const url="http://localhost:5000/game/" + game_id + "/restart";
+        Http.open("PUT", url);
+        Http.send();
+
+        Http.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                game = JSON.parse(Http.response);
+                console.log(game);
+                initialize(game)
+            }
+        }
+    }
     console.log("Loaded");
 };
 
-
-function roll() {
-    let dice_to_roll = [];
-    for (key in dice) if (dice[key].held) dice_to_roll.push(key);
-    console.log(dice_to_roll);
-    // fetch("http://localhost:8080/game/" + sessionStorage.getItem("game_id") + "/roll", {
-    //     method: "PUT",
-    //     body: JSON.stringify({ dice_to_roll }),
-    //     headers: { "Content-type": "application/json; charset=UTF-8" }
-    // }).then(response => response.json())
-    //     .then(json => {
-    //         for (dice in json.message[0]) {
-    //             console.log(json.message[0][dice]);
-    //         }
-    //     })
+function initialize(game) {
+    for (key in dice) {
+        if (dice[key].classList.contains("dice-border-red")) {
+            dice[key].classList.remove("dice-border-red")
+            dice[key].classList.add("dice-border-black")
+        }
+        dice[key].setAttribute("style", "background-image: url(../static/images/dice/" + game.dice[key].value + ".png);");
+    }
 }

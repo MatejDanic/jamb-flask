@@ -10,7 +10,13 @@
 <head>
     <script type="text/javascript">
         var game = "{{ game }}";
-        game = JSON.parse(game.replace(/&#39;/g, '"'));
+        var game_id = "{{ game_id }}";
+        game = game.replace(/False/g, "false")
+        game = game.replace(/True/g, "true")
+        game = game.replace(/None/g, "null")
+        game = game.replace(/&#39;/g, '"')
+        game = JSON.parse(game);
+        console.log(game);
     </script>
     <script src="{{ url_for('static', filename='js/game.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
@@ -69,7 +75,7 @@
                 {% if box.type == "TRIPS" %}
                 <button class="button button-form bg-skyblue"></button>
                 {% endif %}
-                <button class="button button-form box" id="BOX-{{column.type}}-{{box.type}}">
+                <button class="button button-form box" id="BOX-{{column.type}}-{{box.type}}" disabled="{{box.available}}">
                     {% if box.filled %}
                     {{box.value}}
                     {% endif %}

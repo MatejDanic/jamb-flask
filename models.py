@@ -3,13 +3,13 @@ BOX_TYPES = ["ONES", "TWOS", "THREES", "FOURS", "FIVES", "SIXES", "MAX", "MIN", 
 
 class Game:
     def __init__(self):
-        self.announcement = 0
+        self.announcement = None
         self.roll_count = 0
         self.dice = []
         for i in range(5):
             dice = {}
             dice["ordinal"] = i + 1
-            dice["value"] = i%6+1
+            dice["value"] = 6
             self.dice.append(dice)
         self.form = {}
         self.form["columns"] = []
@@ -21,8 +21,8 @@ class Game:
                 box = {}
                 box["type"] = BOX_TYPES[j]
                 box["value"] = 0
-                box["filled"] = 0
-                box["available"] = 0
+                box["filled"] = False
+                box["available"] = column["type"] == "DOWNWARDS" and box["type"] == "ONES" or column["type"] == "UPWARDS" and box["type"] == "JAMB" or column["type"] == "ANY_DIRECTION" or column["type"] == "ANNOUNCEMENT"
                 column["boxes"].append(box)
             self.form["columns"].append(column)
 
@@ -30,7 +30,6 @@ class Game:
     def __repr__(self):
         string = ""
         for d in self.dice:
-            
             C='o '
             dice_string =  '-----\n|'+C[d["value"]<1]+' '+C[d["value"]<3]+'|\n|'+C[d["value"]<5]
             string += dice_string+C[d["value"]&1]+dice_string[::-1]
