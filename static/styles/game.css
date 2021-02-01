@@ -10,6 +10,8 @@ html body {
     background-color: aliceblue;
 }
 
+button:focus { outline:0; }
+
 .error {
     text-shadow: 0 0 10px indianred;
     font-size: 32px;

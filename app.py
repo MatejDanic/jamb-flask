@@ -34,17 +34,6 @@ def index():
             game_id = str(db_operations.new_game(db))
             # put game id into session storage
             session["game_id"] = game_id
-        # redirect to game view and pass game id parameter
-        return redirect(url_for("game", game_id=game_id))
-    except Exception as error:
-        # if an exception ocurred render view with error message
-        return render_template("error.html", error=error)
-
-
-# game view route
-@app.route("/game/<game_id>")
-def game(game_id):
-    try:
         game = db_operations.get_game_by_id(db, game_id)
         # if game id is not already in session add it
         if "game_id" not in session:

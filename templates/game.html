@@ -17,6 +17,7 @@
         game = game.replace(/&#39;/g, '"')
         game = JSON.parse(game);
         console.log(game);
+        console.log(game.roll_count);
     </script>
     <script src="{{ url_for('static', filename='js/game.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
@@ -86,8 +87,7 @@
             {% endfor %}
             <div class="column">
                 <button class="button button-form button-roll-dice image-container bg-lightpink"
-                    style="background-image: url(../static/images/misc/roll_{{game.roll_count}}.png);"
-                    onclick="roll()"></button>
+                    style="background-image: url(../static/images/misc/roll_{{game.roll_count}}.png);"></button>
                 <button class="button button-form bg-skyblue"></button>
                 <button class="button button-form button-restart image-container bg-lightpink" id="restart"
                     style="background-image: url(../static/images/misc/restart.png);"></button>

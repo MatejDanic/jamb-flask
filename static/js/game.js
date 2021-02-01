@@ -1,10 +1,25 @@
-var dice = document.querySelectorAll('[id^="DICE"]');
-var boxes = document.querySelectorAll('[id^="BOX"]');
-var roll_count = game.roll_count;
-var announcement = game.announcement;
+var dice, boxes, roll_count, announcement;
 window.onload = function () {
-    for (key in dice) {
-        dice[key].onclick = function () {
+    console.log("Initializing...")
+    initialize(game);
+    console.log("Done!");
+};
+
+function initialize(game) {
+    dice = document.querySelectorAll('[id^="DICE"]');
+    boxes = document.querySelectorAll('[id^="BOX"]');
+    roll_count = game.roll_count;
+    announcement = game.announcement;
+
+    for (d of dice) {
+        if (d.classList.contains("dice-border-red")) {
+            d.classList.remove("dice-border-red")
+            d.classList.add("dice-border-black")
+        }
+
+        d.setAttribute("style", "background-image: url(../static/images/dice/" + game.dice[d.id.split("-")[1]-1].value + ".png);");
+        
+        d.onclick = function () {
             if (this.classList.contains("dice-border-black")) {
                 this.classList.remove("dice-border-black");
                 this.classList.add("dice-border-red");
@@ -14,11 +29,13 @@ window.onload = function () {
             }
         }
     }
-    for (key in boxes) {
-        boxes[key].onclick = function () {
-            console.log(this.getAttribute("id"));
+
+    for (box of boxes) {
+        box.onclick = function () {
+            console.log(this.id);
         }
     }
+
     let restart = document.getElementById("restart");
     restart.onclick = function () {
         const Http = new XMLHttpRequest();
@@ -33,16 +50,5 @@ window.onload = function () {
                 initialize(game)
             }
         }
-    }
-    console.log("Loaded");
-};
-
-function initialize(game) {
-    for (key in dice) {
-        if (dice[key].classList.contains("dice-border-red")) {
-            dice[key].classList.remove("dice-border-red")
-            dice[key].classList.add("dice-border-black")
-        }
-        dice[key].setAttribute("style", "background-image: url(../static/images/dice/" + game.dice[key].value + ".png);");
     }
 }
