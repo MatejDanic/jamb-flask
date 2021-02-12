@@ -26,8 +26,9 @@ def index():
             game_id = session["game_id"]
             # check game id validity
             if game_id is None or game_id == "":
-                # if game id is invalid clear the session storage
-                session.pop("game_id")
+                if not db_operations.game_exists_by_id(db, game_id):
+                    # if game id is invalid clear the session storage
+                    session.pop("game_id")
         # if game id is not in session
         if "game_id" not in session:
             # save game to database and get game id
@@ -35,19 +36,30 @@ def index():
             # put game id into session storage
             session["game_id"] = game_id
         game = db_operations.get_game_by_id(db, game_id)
-        # if game id is not already in session add it
-        if "game_id" not in session:
-            if not game_id == session["game_id"]:
-                session["game_id"] = game_id
-        # get game from database by game id
         # if no game with given id is retrieved
         if game is None:
-            # clear session storage
-            session.pop("game_id")
-            # redirect to index to create a new game+
-            return redirect(url_for("index"))
+            raise Exception("Game is invalid!")
         # if game is successfully retrieved from database render game view
         return render_template('game.html', game={x: game[x] for x in game if not x == "_id"}, game_id=game_id)
+    except Exception as error:
+        # if an exception ocurred render view with error message
+        return render_template("error.html", error=error)
+
+
+
+@app.route("/game/<game_id>")
+def game(game_id):
+    try:
+        # check if game id variable is valid
+        if game_id is not None and not game_id == "":
+            # if game exists in the database and is valid
+            if db_operations.game_exists_by_id(db, game_id):
+                session["game_id"] = game_id
+                return redirect(url_for("index"))   
+            else:
+                raise Exception("Game with ID " + game_id + " does not exist!")
+        else:
+            raise Exception("Game ID " + game_id + " is invalid!")
     except Exception as error:
         # if an exception ocurred render view with error message
         return render_template("error.html", error=error)
