@@ -23,24 +23,20 @@ def index():
         # check if game id is in session
         if "game_id" in session:
             # get game id from session
-            game_id = session["game_id"]
-            # check game id validity
-            if game_id is None or game_id == "":
-                if not db_operations.game_exists_by_id(db, game_id):
-                    # if game id is invalid clear the session storage
-                    session.pop("game_id")
-        # if game id is not in session
+            if not db_operations.game_exists_by_id(db, session["game_id"]):
+                # if game doesn't exist clear the session storage
+                session.pop("game_id")
+            else:
+                game = db_operations.get_game_by_id(db, session["game_id"])
+
+        # check again if game id is not in session
         if "game_id" not in session:
-            # save game to database and get game id
-            game_id = str(db_operations.new_game(db))
+            # save game to database and get game id 
+            game = db_operations.create_new_game(db)
             # put game id into session storage
-            session["game_id"] = game_id
-        game = db_operations.get_game_by_id(db, game_id)
-        # if no game with given id is retrieved
-        if game is None:
-            raise Exception("Game is invalid!")
+            session["game_id"] = str(game["_id"])
         # if game is successfully retrieved from database render game view
-        return render_template('game.html', game={x: game[x] for x in game if not x == "_id"}, game_id=game_id)
+        return render_template('game.html', game={x: game[x] for x in game if x != "_id"}, game_id=game["_id"])
     except Exception as error:
         # if an exception ocurred render view with error message
         return render_template("error.html", error=error)
@@ -50,16 +46,8 @@ def index():
 @app.route("/game/<game_id>")
 def game(game_id):
     try:
-        # check if game id variable is valid
-        if game_id is not None and not game_id == "":
-            # if game exists in the database and is valid
-            if db_operations.game_exists_by_id(db, game_id):
-                session["game_id"] = game_id
-                return redirect(url_for("index"))   
-            else:
-                raise Exception("Game with ID " + game_id + " does not exist!")
-        else:
-            raise Exception("Game ID " + game_id + " is invalid!")
+        session["game_id"] = game_id
+        return redirect(url_for("index"))
     except Exception as error:
         # if an exception ocurred render view with error message
         return render_template("error.html", error=error)
@@ -69,15 +57,20 @@ def game(game_id):
 @app.route("/game/<game_id>/roll", methods=["PUT"])
 def roll(game_id):
     try:
-        # get game from database by game id
-        game = db_operations.get_game_by_id(db, game_id)
-        dice_to_roll = request.data
-        for dice in dice_to_roll:
-            game["dice"][dice] = random.randint(1, 6)
-        # update current game
-        db_operations.update_game(db, game)
-        # return dice values
-        return jsonify(game["dice"])
+        # check if game with given id exists
+        if db_operations.game_exists_by_id(db, game_id):
+            # get game from database by game id
+            game = db_operations.get_game_by_id(db, game_id)
+            dice_to_roll = request.data
+            for dice in game["dice"]:
+                if dice["ordinal"] in dice_to_roll:
+                    dice["value"] = random.randint(1, 6)
+            # update current game
+            db_operations.update_game(db, game)
+            # return dice values
+            return jsonify(game["dice"])
+        else:
+            raise Exception("Game with ID " + game_id + " doesn't exist!")
     except Exception as error:
         response = jsonify({"error": str(error)})
         response.status = 500
@@ -89,10 +82,12 @@ def roll(game_id):
 @app.route("/game/<game_id>/restart", methods=["PUT"])
 def restart(game_id):
     try:
-        db_operations.restart_game_by_id(db, game_id)
-        game = db_operations.get_game_by_id(db, game_id)
-        response = jsonify({x: game[x] for x in game if not x == "_id"})
-        return response
+        # check if game with given id exists
+        if db_operations.game_exists_by_id(db, game_id):
+            # restart game from database by game id
+            game = db_operations.restart_game_by_id(db, game_id)
+            response = jsonify({x: game[x] for x in game if not x == "_id"})
+            return response
     except Exception as error:
         response = jsonify({"error": str(error)})
         response.status = 500

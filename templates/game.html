@@ -17,7 +17,6 @@
         game = game.replace(/&#39;/g, '"')
         game = JSON.parse(game);
         console.log(game);
-        console.log(game.roll_count);
     </script>
     <script src="{{ url_for('static', filename='js/game.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
@@ -76,7 +75,7 @@
                 {% if box.type == "TRIPS" %}
                 <button class="button button-form bg-skyblue"></button>
                 {% endif %}
-                <button class="button button-form box" id="BOX-{{column.type}}-{{box.type}}" disabled="{{box.available}}">
+                <button class="button button-form box" id="BOX-{{column.type}}-{{box.type}}">
                     {% if box.filled %}
                     {{box.value}}
                     {% endif %}
@@ -86,10 +85,10 @@
             </div>
             {% endfor %}
             <div class="column">
-                <button class="button button-form button-roll-dice image-container bg-lightpink"
+                <button class="button button-form button-roll-dice image-container bg-lightpink" id="ROLL-DICE-BUTTON"
                     style="background-image: url(../static/images/misc/roll_{{game.roll_count}}.png);"></button>
                 <button class="button button-form bg-skyblue"></button>
-                <button class="button button-form button-restart image-container bg-lightpink" id="restart"
+                <button class="button button-form button-restart image-container bg-lightpink" id="RESTART-BUTTON"
                     style="background-image: url(../static/images/misc/restart.png);"></button>
                 <button class="button button-form bg-skyblue"></button>
                 <button class="button button-form button-scoreboard bg-lightpink"></button>
