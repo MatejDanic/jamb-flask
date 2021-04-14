@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, jsonify, session
 from pymongo import MongoClient, errors
 import os, sys, random
+import json
 import db_operations
 
 # database
@@ -27,11 +28,11 @@ def index():
                 # if game doesn't exist clear the session storage
                 session.pop("game_id")
             else:
-                game = db_operations.get_game_by_id(db, session["game_id"])
+                game = db_operations.find_game_by_id(db, session["game_id"])
 
         # check again if game id is not in session
         if "game_id" not in session:
-            # save game to database and get game id 
+            # save game to database and get game id
             game = db_operations.create_new_game(db)
             # put game id into session storage
             session["game_id"] = str(game["_id"])
@@ -60,8 +61,8 @@ def roll(game_id):
         # check if game with given id exists
         if db_operations.game_exists_by_id(db, game_id):
             # get game from database by game id
-            game = db_operations.get_game_by_id(db, game_id)
-            dice_to_roll = request.data
+            game = db_operations.find_game_by_id(db, game_id)
+            dice_to_roll = json.loads(request.data.decode('utf8'))["dice_to_roll"]
             for dice in game["dice"]:
                 if dice["ordinal"] in dice_to_roll:
                     dice["value"] = random.randint(1, 6)
@@ -73,7 +74,7 @@ def roll(game_id):
             raise Exception("Game with ID " + game_id + " doesn't exist!")
     except Exception as error:
         response = jsonify({"error": str(error)})
-        response.status = 500
+        #response.status = 500
         # if an exception ocurred return error status
         return response
 
@@ -86,11 +87,11 @@ def restart(game_id):
         if db_operations.game_exists_by_id(db, game_id):
             # restart game from database by game id
             game = db_operations.restart_game_by_id(db, game_id)
-            response = jsonify({x: game[x] for x in game if not x == "_id"})
+            response = jsonify({x: game[x] for x in game if x != "_id"})
             return response
     except Exception as error:
         response = jsonify({"error": str(error)})
-        response.status = 500
+        #response.status = 500
         # if an exception ocurred return error status
         return response
 

@@ -27,6 +27,7 @@ function initialize(game) {
                 this.classList.add("dice-border-black");
             }
         }
+        dice_button.setAttribute("style", "background-image: url(../static/images/dice/" + game.dice[dice_button.id.split("-")[1] - 1].value + ".png");
     }
 
     for (box_button of box_buttons) {
@@ -37,17 +38,18 @@ function initialize(game) {
 
     roll_dice_button.onclick = function() {
         console.log("Rolling dice...");
+
         const Http = new XMLHttpRequest();
         const url = "http://localhost:5000/game/" + game_id + "/roll";
         Http.open("PUT", url);
         let dice_to_roll = [];
         for (dice_button of dice_buttons) {
             if (dice_button.classList.contains("dice-border-black")) {
-                dice_to_roll.push(dice_button.id.split("-")[1]);
+                dice_to_roll.push(parseInt(dice_button.id.split("-")[1]));
             }
         }
-        data = {};
-        Http.send(JSON.stringify(dice_to_roll));
+        data = {"dice_to_roll": dice_to_roll};
+        Http.send(JSON.stringify(data));
 
         Http.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -62,6 +64,7 @@ function initialize(game) {
 
     restart_button.onclick = function() {
         console.log("Restarting...")
+
         const Http = new XMLHttpRequest();
         const url = "http://localhost:5000/game/" + game_id + "/restart";
         Http.open("PUT", url);

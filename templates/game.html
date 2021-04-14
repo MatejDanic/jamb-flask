@@ -27,8 +27,7 @@
     <div class="center">
         <div class="dice-rack" id="dice-rack">
             {% for dice in game.dice %}
-            <button class="button image-container dice dice-border-black" id="DICE-{{dice.ordinal}}"
-                style="background-image: url(../static/images/dice/{{dice.value}}.png);"></button>
+            <button class="button image-container dice dice-border-black" id="DICE-{{dice.ordinal}}"></button>
             {% endfor %}
         </div>
         <div class="form" id="form">
